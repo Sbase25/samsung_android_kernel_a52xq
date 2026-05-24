@@ -5905,9 +5905,6 @@ static void print_binder_transaction_ilocked(struct seq_file *m,
 }
 
 static void print_binder_work_ilocked(struct seq_file *m,
-					 const char *prefix,
-					 const char *transaction_prefix,
-					 struct binder_work *w)
 {
 	struct binder_node *node;
 	struct binder_transaction *t;
