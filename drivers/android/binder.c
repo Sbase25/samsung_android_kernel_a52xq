@@ -6651,3 +6651,15 @@ device_initcall(binder_init);
 #include "binder_trace.h"
 
 MODULE_LICENSE("GPL v2");
+
+int binder_state_hashed_show(struct seq_file *m, void *unused)
+{
+	print_binder_state(m, true);
+	return 0;
+}
+
+int binder_transactions_hashed_show(struct seq_file *m, void *unused)
+{
+	print_binder_transactions(m, true);
+	return 0;
+}
