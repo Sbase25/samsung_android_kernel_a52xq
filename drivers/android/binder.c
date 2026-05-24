@@ -6653,13 +6653,13 @@ device_initcall(binder_init);
 MODULE_LICENSE("GPL v2");
 
 int binder_state_hashed_show(struct seq_file *m, void *unused)
+
+int binder_state_hashed_show(struct seq_file *m, void *unused)
 {
-	print_binder_state(m, true);
-	return 0;
+	return binder_state_show(m, unused);
 }
 
 int binder_transactions_hashed_show(struct seq_file *m, void *unused)
 {
-	print_binder_transactions(m, true);
-	return 0;
+	return binder_transactions_show(m, unused);
 }
