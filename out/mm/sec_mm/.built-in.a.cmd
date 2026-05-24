@@ -1,0 +1,1 @@
+cmd_mm/sec_mm/built-in.a :=  rm -f mm/sec_mm/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD mm/sec_mm/built-in.a mm/sec_mm/sec_mm_init.o mm/sec_mm/lowfile_detect.o mm/sec_mm/show_mem.o

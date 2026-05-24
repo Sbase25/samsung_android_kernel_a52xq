@@ -1,0 +1,1 @@
+cmd_sound/drivers/built-in.a :=  rm -f sound/drivers/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD sound/drivers/built-in.a sound/drivers/opl3/built-in.a sound/drivers/opl4/built-in.a sound/drivers/mpu401/built-in.a sound/drivers/vx/built-in.a sound/drivers/pcsp/built-in.a

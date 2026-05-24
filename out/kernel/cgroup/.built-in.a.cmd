@@ -1,0 +1,1 @@
+cmd_kernel/cgroup/built-in.a :=  rm -f kernel/cgroup/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD kernel/cgroup/built-in.a kernel/cgroup/cgroup.o kernel/cgroup/rstat.o kernel/cgroup/namespace.o kernel/cgroup/cgroup-v1.o kernel/cgroup/freezer.o kernel/cgroup/legacy_freezer.o kernel/cgroup/cpuset.o

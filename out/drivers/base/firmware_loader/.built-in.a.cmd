@@ -1,0 +1,1 @@
+cmd_drivers/base/firmware_loader/built-in.a :=  rm -f drivers/base/firmware_loader/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/base/firmware_loader/built-in.a drivers/base/firmware_loader/fallback_table.o drivers/base/firmware_loader/main.o drivers/base/firmware_loader/fallback.o

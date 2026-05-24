@@ -1,0 +1,1 @@
+cmd_net/dns_resolver/built-in.a :=  rm -f net/dns_resolver/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD net/dns_resolver/built-in.a net/dns_resolver/dns_key.o net/dns_resolver/dns_query.o

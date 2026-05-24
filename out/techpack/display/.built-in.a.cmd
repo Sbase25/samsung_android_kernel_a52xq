@@ -1,0 +1,1 @@
+cmd_techpack/display/built-in.a :=  rm -f techpack/display/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD techpack/display/built-in.a techpack/display/msm/built-in.a techpack/display/rotator/built-in.a techpack/display/pll/built-in.a

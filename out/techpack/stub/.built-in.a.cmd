@@ -1,0 +1,1 @@
+cmd_techpack/stub/built-in.a :=  rm -f techpack/stub/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD techpack/stub/built-in.a techpack/stub/stub.o

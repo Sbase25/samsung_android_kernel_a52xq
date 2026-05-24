@@ -1,0 +1,51 @@
+!<thin>
+//                                              646       `
+msm/vidc/msm_v4l2_vidc.o/
+msm/vidc/msm_v4l2_private.o/
+msm/vidc/msm_vidc_platform.o/
+msm/vidc/msm_vidc_common.o/
+msm/vidc/msm_vidc.o/
+msm/vidc/msm_vdec.o/
+msm/vidc/msm_venc.o/
+msm/vidc/msm_cvp_internal.o/
+msm/vidc/msm_smem.o/
+msm/vidc/msm_vidc_debug.o/
+msm/vidc/msm_vidc_res_parse.o/
+msm/vidc/hfi_common.o/
+msm/vidc/hfi_ar50.o/
+msm/vidc/hfi_ar50_lt.o/
+msm/vidc/hfi_iris1.o/
+msm/vidc/hfi_iris2.o/
+msm/vidc/hfi_response_handler.o/
+msm/vidc/hfi_packetization.o/
+msm/vidc/vidc_hfi.o/
+msm/vidc/msm_vidc_clocks.o/
+msm/vidc/msm_vidc_bus_ar50lite.o/
+msm/vidc/msm_vidc_bus_iris1.o/
+msm/vidc/msm_vidc_bus_iris2.o/
+msm/vidc/msm_vidc_buffer_calculations.o/
+
+/0              0           0     0     644     519672    `
+/26             0           0     0     644     654488    `
+/55             0           0     0     644     246728    `
+/85             0           0     0     644     3173600   `
+/113            0           0     0     644     1103408   `
+/134            0           0     0     644     670344    `
+/155            0           0     0     644     2672416   `
+/176            0           0     0     644     487856    `
+/205            0           0     0     644     492760    `
+/226            0           0     0     644     559024    `
+/253            0           0     0     644     768296    `
+/284            0           0     0     644     2188520   `
+/307            0           0     0     644     189392    `
+/328            0           0     0     644     251192    `
+/352            0           0     0     644     191496    `
+/374            0           0     0     644     339832    `
+/396            0           0     0     644     610032    `
+/429            0           0     0     644     289504    `
+/459            0           0     0     644     193680    `
+/480            0           0     0     644     761576    `
+/508            0           0     0     644     175768    `
+/542            0           0     0     644     225824    `
+/573            0           0     0     644     205152    `
+/604            0           0     0     644     565168    `

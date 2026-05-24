@@ -1,0 +1,1 @@
+cmd_drivers/bluetooth/built-in.a :=  rm -f drivers/bluetooth/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/bluetooth/built-in.a drivers/bluetooth/bluetooth-power.o drivers/bluetooth/btfm_slim.o drivers/bluetooth/btfm_slim_codec.o drivers/bluetooth/btfm_slim_slave.o

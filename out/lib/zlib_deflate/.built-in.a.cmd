@@ -1,0 +1,1 @@
+cmd_lib/zlib_deflate/built-in.a :=  rm -f lib/zlib_deflate/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD lib/zlib_deflate/built-in.a lib/zlib_deflate/deflate.o lib/zlib_deflate/deftree.o lib/zlib_deflate/deflate_syms.o

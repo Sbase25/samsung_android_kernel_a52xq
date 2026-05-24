@@ -1,0 +1,25 @@
+!<thin>
+//                                              342       `
+os_layer/src/tas256x-codec.o/
+os_layer/src/tas256x-regmap.o/
+physical_layer/src/tas256x.o/
+logical_layer/src/tas256x-logic.o/
+algo/src/tas25xx-algo-common.o/
+algo/src/tas25xx-calib.o/
+algo/src/tas25xx-algo-intf.o/
+bigdata_tas_sysfs_cb.o/
+algo/platform/qcom/tas25xx-algo-qdsp-intf.o/
+misc/tas256x-misc.o/
+algo/src/tas25xx-calib-validation.o/
+
+/0              0           0     0     644     292200    `
+/30             0           0     0     644     361488    `
+/61             0           0     0     644     273024    `
+/91             0           0     0     644     269008    `
+/126            0           0     0     644     214904    `
+/158            0           0     0     644     153680    `
+/184            0           0     0     644     11504     `
+/214            0           0     0     644     202456    `
+/238            0           0     0     644     137936    `
+/283            0           0     0     644     289152    `
+/304            0           0     0     644     289712    `

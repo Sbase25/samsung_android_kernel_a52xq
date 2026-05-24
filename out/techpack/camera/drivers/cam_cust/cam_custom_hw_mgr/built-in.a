@@ -1,0 +1,12 @@
+!<thin>
+//                                              184       `
+cam_custom_hw1/cam_custom_sub_mod_soc.o/
+cam_custom_hw1/cam_custom_sub_mod_dev.o/
+cam_custom_hw1/cam_custom_sub_mod_core.o/
+cam_custom_csid/cam_custom_csid_dev.o/
+cam_custom_hw_mgr.o/
+/0              0           0     0     644     146384    `
+/41             0           0     0     644     156480    `
+/82             0           0     0     644     155768    `
+/124            0           0     0     644     181016    `
+/163            0           0     0     644     270800    `

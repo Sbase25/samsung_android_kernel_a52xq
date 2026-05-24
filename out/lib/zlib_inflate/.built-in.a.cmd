@@ -1,0 +1,1 @@
+cmd_lib/zlib_inflate/built-in.a :=  rm -f lib/zlib_inflate/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD lib/zlib_inflate/built-in.a lib/zlib_inflate/inffast.o lib/zlib_inflate/inflate.o lib/zlib_inflate/infutil.o lib/zlib_inflate/inftrees.o lib/zlib_inflate/inflate_syms.o

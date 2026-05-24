@@ -1,0 +1,1 @@
+cmd_sound/pci/cs5535audio/built-in.a :=  rm -f sound/pci/cs5535audio/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD sound/pci/cs5535audio/built-in.a 

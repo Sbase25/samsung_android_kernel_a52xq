@@ -1,0 +1,1 @@
+cmd_fs/erofs/built-in.a :=  rm -f fs/erofs/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/erofs/built-in.a fs/erofs/super.o fs/erofs/inode.o fs/erofs/data.o fs/erofs/namei.o fs/erofs/dir.o fs/erofs/utils.o fs/erofs/xattr.o fs/erofs/decompressor.o fs/erofs/zmap.o fs/erofs/zdata.o

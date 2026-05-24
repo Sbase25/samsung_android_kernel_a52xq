@@ -1,0 +1,12 @@
+!<thin>
+//                                              86        `
+cam_ois_dev.o/
+cam_ois_core.o/
+cam_ois_soc.o/
+cam_ois_mcu_stm32g.o/
+cam_ois_thread.o/
+/0              0           0     0     644     303072    `
+/15             0           0     0     644     321064    `
+/31             0           0     0     644     250592    `
+/46             0           0     0     644     568152    `
+/68             0           0     0     644     263888    `

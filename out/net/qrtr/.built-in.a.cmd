@@ -1,0 +1,1 @@
+cmd_net/qrtr/built-in.a :=  rm -f net/qrtr/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD net/qrtr/built-in.a net/qrtr/qrtr.o net/qrtr/smd.o net/qrtr/mhi.o

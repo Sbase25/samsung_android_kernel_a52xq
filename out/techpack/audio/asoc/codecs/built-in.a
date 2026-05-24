@@ -1,0 +1,88 @@
+!<thin>
+//                                              1088      `
+wcd937x/wcd937x.o/
+wcd937x/wcd937x-regmap.o/
+wcd937x/wcd937x-tables.o/
+wcd937x/wcd937x-mbhc.o/
+wcd937x/wcd937x_slave.o/
+wcd938x/wcd938x.o/
+wcd938x/wcd938x-regmap.o/
+wcd938x/wcd938x-tables.o/
+wcd938x/wcd938x-mbhc.o/
+wcd938x/wcd938x-slave.o/
+bolero/bolero-cdc.o/
+bolero/bolero-cdc-utils.o/
+bolero/bolero-cdc-regmap.o/
+bolero/bolero-cdc-tables.o/
+bolero/bolero-clk-rsc.o/
+bolero/va-macro.o/
+bolero/tx-macro.o/
+bolero/rx-macro.o/
+tas256x/os_layer/src/tas256x-codec.o/
+tas256x/os_layer/src/tas256x-regmap.o/
+tas256x/physical_layer/src/tas256x.o/
+tas256x/logical_layer/src/tas256x-logic.o/
+tas256x/algo/src/tas25xx-algo-common.o/
+tas256x/algo/src/tas25xx-calib.o/
+tas256x/algo/src/tas25xx-algo-intf.o/
+tas256x/bigdata_tas_sysfs_cb.o/
+tas256x/algo/platform/qcom/tas25xx-algo-qdsp-intf.o/
+tas256x/misc/tas256x-misc.o/
+tas256x/algo/src/tas25xx-calib-validation.o/
+wcd9xxx-core-init.o/
+msm-cdc-pinctrl.o/
+msm-cdc-supply.o/
+wcd-irq.o/
+wcd-clsh.o/
+wcdcal-hwdep.o/
+wcd9xxx-soc-init.o/
+wcd-dsp-utils.o/
+wcd-dsp-mgr.o/
+audio-ext-clk-up.o/
+msm_stub.o/
+wcd-mbhc-v2.o/
+wcd-mbhc-adc.o/
+msm_hdmi_codec_rx.o/
+/0              0           0     0     644     495600    `
+/19             0           0     0     644     41832     `
+/45             0           0     0     644     4144      `
+/71             0           0     0     644     297904    `
+/95             0           0     0     644     63368     `
+/120            0           0     0     644     572880    `
+/139            0           0     0     644     42240     `
+/165            0           0     0     644     4152      `
+/191            0           0     0     644     299944    `
+/215            0           0     0     644     62960     `
+/240            0           0     0     644     344184    `
+/261            0           0     0     644     210312    `
+/288            0           0     0     644     207584    `
+/316            0           0     0     644     8208      `
+/344            0           0     0     644     197552    `
+/369            0           0     0     644     491776    `
+/388            0           0     0     644     520864    `
+/407            0           0     0     644     545856    `
+/426            0           0     0     644     292200    `
+/464            0           0     0     644     361488    `
+/503            0           0     0     644     273024    `
+/541            0           0     0     644     269008    `
+/584            0           0     0     644     214904    `
+/624            0           0     0     644     153680    `
+/658            0           0     0     644     11504     `
+/696            0           0     0     644     202456    `
+/728            0           0     0     644     137936    `
+/781            0           0     0     644     289152    `
+/810            0           0     0     644     289712    `
+/855            0           0     0     644     105256    `
+/876            0           0     0     644     180768    `
+/895            0           0     0     644     152304    `
+/913            0           0     0     644     100584    `
+/924            0           0     0     644     246288    `
+/936            0           0     0     644     225432    `
+/952            0           0     0     644     6960      `
+/972            0           0     0     644     52320     `
+/989            0           0     0     644     227888    `
+/1004           0           0     0     644     190352    `
+/1024           0           0     0     644     204400    `
+/1036           0           0     0     644     447672    `
+/1051           0           0     0     644     340296    `
+/1067           0           0     0     644     252944    `

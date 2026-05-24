@@ -1,0 +1,1 @@
+cmd_init/built-in.a :=  rm -f init/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD init/built-in.a init/main.o init/version.o init/do_mounts.o init/do_mounts_rd.o init/do_mounts_initrd.o init/do_mounts_dm.o init/noinitramfs.o init/initramfs.o init/calibrate.o init/init_task.o

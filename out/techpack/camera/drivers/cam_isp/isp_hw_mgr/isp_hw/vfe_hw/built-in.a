@@ -1,0 +1,39 @@
+!<thin>
+//                                              464       `
+cam_vfe_soc.o/
+cam_vfe_dev.o/
+cam_vfe_core.o/
+vfe_bus/cam_vfe_bus.o/
+vfe_bus/cam_vfe_bus_ver2.o/
+vfe_bus/cam_vfe_bus_rd_ver1.o/
+vfe_bus/cam_vfe_bus_ver3.o/
+vfe_top/cam_vfe_camif_lite_ver2.o/
+vfe_top/cam_vfe_top.o/
+vfe_top/cam_vfe_top_common.o/
+vfe_top/cam_vfe_top_ver3.o/
+vfe_top/cam_vfe_top_ver2.o/
+vfe_top/cam_vfe_camif_ver2.o/
+vfe_top/cam_vfe_camif_ver3.o/
+vfe_top/cam_vfe_rdi.o/
+vfe_top/cam_vfe_fe_ver1.o/
+vfe_top/cam_vfe_camif_lite_ver3.o/
+vfe17x/cam_vfe.o/
+
+/0              0           0     0     644     161232    `
+/15             0           0     0     644     150152    `
+/30             0           0     0     644     188592    `
+/46             0           0     0     644     133616    `
+/69             0           0     0     644     356904    `
+/97             0           0     0     644     221800    `
+/128            0           0     0     644     365392    `
+/156            0           0     0     644     199416    `
+/191            0           0     0     644     131576    `
+/214            0           0     0     644     151864    `
+/244            0           0     0     644     210320    `
+/272            0           0     0     644     212200    `
+/300            0           0     0     644     221720    `
+/330            0           0     0     644     274648    `
+/360            0           0     0     644     201576    `
+/383            0           0     0     644     187024    `
+/410            0           0     0     644     246992    `
+/445            0           0     0     644     221488    `

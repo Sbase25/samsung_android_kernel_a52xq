@@ -1,0 +1,1 @@
+cmd_fs/sysfs/built-in.a :=  rm -f fs/sysfs/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/sysfs/built-in.a fs/sysfs/file.o fs/sysfs/dir.o fs/sysfs/symlink.o fs/sysfs/mount.o fs/sysfs/group.o

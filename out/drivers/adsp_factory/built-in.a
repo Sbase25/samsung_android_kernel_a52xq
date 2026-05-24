@@ -1,0 +1,17 @@
+!<thin>
+//                                              118       `
+adsp_factory.o/
+ssc_core.o/
+lsm6dso_accel.o/
+lsm6dso_gyro.o/
+stk31610_light.o/
+ak09918_mag.o/
+flip_cover_detector.o/
+
+/0              0           0     0     644     348792    `
+/16             0           0     0     644     212920    `
+/28             0           0     0     644     208616    `
+/45             0           0     0     644     145608    `
+/61             0           0     0     644     154496    `
+/79             0           0     0     644     149280    `
+/94             0           0     0     644     171904    `

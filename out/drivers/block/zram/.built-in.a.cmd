@@ -1,0 +1,1 @@
+cmd_drivers/block/zram/built-in.a :=  rm -f drivers/block/zram/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/block/zram/built-in.a drivers/block/zram/zcomp.o drivers/block/zram/zram_drv.o drivers/block/zram/zram_dedup.o

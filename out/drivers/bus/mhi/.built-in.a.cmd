@@ -1,0 +1,1 @@
+cmd_drivers/bus/mhi/built-in.a :=  rm -f drivers/bus/mhi/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/bus/mhi/built-in.a drivers/bus/mhi/core/built-in.a drivers/bus/mhi/controllers/built-in.a drivers/bus/mhi/devices/built-in.a

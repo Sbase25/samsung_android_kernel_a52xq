@@ -1,0 +1,1 @@
+cmd_fs/ramfs/built-in.a :=  rm -f fs/ramfs/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/ramfs/built-in.a fs/ramfs/inode.o fs/ramfs/file-mmu.o

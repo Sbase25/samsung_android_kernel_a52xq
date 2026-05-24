@@ -1,0 +1,1 @@
+cmd_fs/pstore/built-in.a :=  rm -f fs/pstore/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/pstore/built-in.a fs/pstore/inode.o fs/pstore/platform.o fs/pstore/pmsg.o fs/pstore/ss_platform_log.o fs/pstore/ram.o fs/pstore/ram_core.o

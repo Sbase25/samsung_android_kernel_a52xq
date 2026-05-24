@@ -1,0 +1,1 @@
+cmd_fs/devpts/built-in.a :=  rm -f fs/devpts/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/devpts/built-in.a fs/devpts/inode.o

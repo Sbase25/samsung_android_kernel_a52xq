@@ -1,0 +1,54 @@
+!<thin>
+//                                              388       `
+common.o/
+clk-regmap.o/
+clk-alpha-pll.o/
+clk-pll.o/
+clk-rcg.o/
+clk-rcg2.o/
+clk-branch.o/
+clk-regmap-divider.o/
+clk-regmap-mux.o/
+clk-regmap-mux-div.o/
+reset.o/
+clk-voter.o/
+clk-dummy.o/
+clk-debug.o/
+gdsc-regulator.o/
+gdsc.o/
+clk-aop-qmp.o/
+clk-rpmh.o/
+camcc-lagoon.o/
+debugcc-lagoon.o/
+dispcc-lagoon.o/
+gcc-lagoon.o/
+gpucc-lagoon.o/
+npucc-lagoon.o/
+videocc-lagoon.o/
+clk-spmi-pmic-div.o/
+/0              0           0     0     644     170344    `
+/10             0           0     0     644     131152    `
+/24             0           0     0     644     273224    `
+/41             0           0     0     644     127480    `
+/52             0           0     0     644     170984    `
+/63             0           0     0     644     242528    `
+/75             0           0     0     644     130184    `
+/89             0           0     0     644     109536    `
+/111            0           0     0     644     103064    `
+/129            0           0     0     644     121064    `
+/151            0           0     0     644     9184      `
+/160            0           0     0     644     18520     `
+/173            0           0     0     644     89520     `
+/186            0           0     0     644     156256    `
+/199            0           0     0     644     264880    `
+/217            0           0     0     644     67416     `
+/225            0           0     0     644     109640    `
+/240            0           0     0     644     139960    `
+/252            0           0     0     644     212168    `
+/268            0           0     0     644     121224    `
+/286            0           0     0     644     174600    `
+/303            0           0     0     644     233624    `
+/317            0           0     0     644     165832    `
+/333            0           0     0     644     172720    `
+/349            0           0     0     644     159624    `
+/367            0           0     0     644     126088    `

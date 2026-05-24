@@ -1,0 +1,1 @@
+cmd_techpack/audio/asoc/codecs/wcd934x/built-in.a :=  rm -f techpack/audio/asoc/codecs/wcd934x/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD techpack/audio/asoc/codecs/wcd934x/built-in.a 

@@ -1,0 +1,1 @@
+cmd_certs/built-in.a :=  rm -f certs/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD certs/built-in.a certs/system_keyring.o certs/system_certificates.o

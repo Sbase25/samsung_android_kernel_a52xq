@@ -1,0 +1,1 @@
+cmd_drivers/block/built-in.a :=  rm -f drivers/block/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/block/built-in.a drivers/block/brd.o drivers/block/loop.o drivers/block/zram/built-in.a

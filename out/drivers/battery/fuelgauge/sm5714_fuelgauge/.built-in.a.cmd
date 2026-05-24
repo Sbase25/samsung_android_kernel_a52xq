@@ -1,0 +1,1 @@
+cmd_drivers/battery/fuelgauge/sm5714_fuelgauge/built-in.a :=  rm -f drivers/battery/fuelgauge/sm5714_fuelgauge/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD drivers/battery/fuelgauge/sm5714_fuelgauge/built-in.a drivers/battery/fuelgauge/sm5714_fuelgauge/sm5714_fuelgauge.o

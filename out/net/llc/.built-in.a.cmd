@@ -1,0 +1,1 @@
+cmd_net/llc/built-in.a :=  rm -f net/llc/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD net/llc/built-in.a net/llc/llc_core.o net/llc/llc_input.o net/llc/llc_output.o

@@ -1,0 +1,1 @@
+cmd_fs/tracefs/built-in.a :=  rm -f fs/tracefs/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/tracefs/built-in.a fs/tracefs/inode.o

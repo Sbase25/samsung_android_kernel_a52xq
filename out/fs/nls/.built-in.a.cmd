@@ -1,0 +1,1 @@
+cmd_fs/nls/built-in.a :=  rm -f fs/nls/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/nls/built-in.a fs/nls/nls_base.o fs/nls/nls_cp437.o fs/nls/nls_iso8859-1.o fs/nls/nls_utf8.o

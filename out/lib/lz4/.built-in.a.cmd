@@ -1,0 +1,1 @@
+cmd_lib/lz4/built-in.a :=  rm -f lib/lz4/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD lib/lz4/built-in.a lib/lz4/lz4_compress.o lib/lz4/lz4_decompress.o

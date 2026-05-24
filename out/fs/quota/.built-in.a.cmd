@@ -1,0 +1,1 @@
+cmd_fs/quota/built-in.a :=  rm -f fs/quota/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/quota/built-in.a fs/quota/dquot.o fs/quota/quota_v2.o fs/quota/quota_tree.o fs/quota/quota.o fs/quota/kqid.o fs/quota/netlink.o

@@ -1,0 +1,355 @@
+mkdir: cannot create directory ‘out’: File exists
+make: Entering directory '/home/stijn/samsung_android_kernel_a52xq'
+make[1]: Entering directory '/home/stijn/samsung_android_kernel_a52xq/out'
+  GEN     ./Makefile
+drivers/sensors/Kconfig:187: warning: 'SENSORS_A96T365IF' defined with blank help text
+drivers/samsung/debug/Kconfig:4:warning: ignoring type redefinition of 'SEC_DEBUG' from 'tristate' to 'bool'
+drivers/samsung/debug/Kconfig:30:warning: defaults for choice values not supported
+drivers/samsung/debug/Kconfig:36:warning: defaults for choice values not supported
+arch/arm64/configs/a52xq_defconfig:6659:warning: override: reassigning to symbol OVERLAY_FS
+arch/arm64/configs/a52xq_defconfig:6660:warning: override: reassigning to symbol OVERLAY_FS_REDIRECT_DIR
+arch/arm64/configs/a52xq_defconfig:6661:warning: override: reassigning to symbol OVERLAY_FS_INDEX
+arch/arm64/configs/a52xq_defconfig:6662:warning: override: reassigning to symbol OVERLAY_FS_XINO_AUTO
+arch/arm64/configs/a52xq_defconfig:6663:warning: override: reassigning to symbol ANDROID_BINDERFS
+arch/arm64/configs/a52xq_defconfig:6664:warning: override: reassigning to symbol EROFS_FS
+arch/arm64/configs/a52xq_defconfig:6665:warning: override: reassigning to symbol EROFS_FS_ZIP
+arch/arm64/configs/a52xq_defconfig:6666:warning: override: reassigning to symbol USER_NS
+arch/arm64/configs/a52xq_defconfig:6667:warning: override: reassigning to symbol PID_NS
+arch/arm64/configs/a52xq_defconfig:6668:warning: override: reassigning to symbol NET_NS
+arch/arm64/configs/a52xq_defconfig:6669:warning: override: reassigning to symbol DM_VERITY
+arch/arm64/configs/a52xq_defconfig:6671:warning: override: reassigning to symbol FS_ENCRYPTION
+arch/arm64/configs/a52xq_defconfig:6672:warning: override: reassigning to symbol IKCONFIG
+arch/arm64/configs/a52xq_defconfig:6673:warning: override: reassigning to symbol IKCONFIG_PROC
+KCONFIG_VARIANT((null))
+KCONFIG_DEBUG((null))
+#
+# configuration written to .config
+#
+make[1]: Leaving directory '/home/stijn/samsung_android_kernel_a52xq/out'
+make: Leaving directory '/home/stijn/samsung_android_kernel_a52xq'
+make: Entering directory '/home/stijn/samsung_android_kernel_a52xq'
+make[1]: Entering directory '/home/stijn/samsung_android_kernel_a52xq/out'
+make[1]: secgetspf: No such file or directory
+  GEN     ./Makefile
+scripts/kconfig/conf  --syncconfig Kconfig
+drivers/sensors/Kconfig:187: warning: 'SENSORS_A96T365IF' defined with blank help text
+drivers/samsung/debug/Kconfig:4:warning: ignoring type redefinition of 'SEC_DEBUG' from 'tristate' to 'bool'
+drivers/samsung/debug/Kconfig:30:warning: defaults for choice values not supported
+drivers/samsung/debug/Kconfig:36:warning: defaults for choice values not supported
+make[1]: secgetspf: No such file or directory
+  GEN     ./Makefile
+../security/samsung/defex_lsm/Makefile:29: [DEFEX] INTEGRITY_ENABLE
+../security/samsung/defex_lsm/Makefile:155: [DEFEX] DEBUG_ENABLE
+cp: cannot stat '../../../system/core/liblog/include/log/perflog.h': No such file or directory
+kperfmon_DUMMY=""
+cp: cannot stat '../../../system/logging/liblog/include/log/perflog.h': No such file or directory
+kperfmon_DUMMY=""
+cp: cannot stat '../../system/core/liblog/include/log/perflog.h': No such file or directory
+kperfmon_DUMMY=""
+kperfmon_DUMMY=""
+  Using .. as source for kernel
+make[5]: secgetspf: No such file or directory
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+../security/samsung/defex_lsm/Makefile:29: [DEFEX] INTEGRITY_ENABLE
+../security/samsung/defex_lsm/Makefile:155: [DEFEX] DEBUG_ENABLE
+  CC      drivers/android/binder.o
+  CC      kernel/locking/mutex.o
+  AR      drivers/char/ipmi/built-in.a
+../drivers/android/binder.c:5934:7: error: use of undeclared identifier 'hash_ptrs'; did you mean 'hash_ptr'?
+                if (hash_ptrs)
+                    ^~~~~~~~~
+                    hash_ptr
+../include/linux/hash.h:88:19: note: 'hash_ptr' declared here
+static inline u32 hash_ptr(const void *ptr, unsigned int bits)
+                  ^
+../drivers/android/binder.c:5961:1: error: expected parameter declarator
+{
+^
+../drivers/android/binder.c:5961:1: error: expected ')'
+../drivers/android/binder.c:5959:40: note: to match this '('
+static void print_binder_thread_ilocked(struct seq_file *m,
+                                       ^
+../drivers/android/binder.c:6293:19: error: use of undeclared identifier 'binder_return_strings'; did you mean 'binder_command_strings'?
+                     ARRAY_SIZE(binder_return_strings));
+                                ^~~~~~~~~~~~~~~~~~~~~
+                                binder_command_strings
+../include/linux/kernel.h:44:33: note: expanded from macro 'ARRAY_SIZE'
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+                                ^
+../include/linux/build_bug.h:69:19: note: expanded from macro 'BUILD_BUG_ON'
+        BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+                         ^
+../include/linux/build_bug.h:45:58: note: expanded from macro 'BUILD_BUG_ON_MSG'
+#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                                         ^
+../include/linux/compiler.h:348:22: note: expanded from macro 'compiletime_assert'
+        _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                            ^
+../include/linux/compiler.h:336:23: note: expanded from macro '_compiletime_assert'
+        __compiletime_assert(condition, msg, prefix, suffix)
+                             ^
+../include/linux/compiler.h:328:9: note: expanded from macro '__compiletime_assert'
+                if (!(condition))                                               \
+                      ^
+../drivers/android/binder.c:6245:27: note: 'binder_command_strings' declared here
+static const char * const binder_command_strings[] = {
+                          ^
+../drivers/android/binder.c:6293:19: error: use of undeclared identifier 'binder_return_strings'; did you mean 'binder_command_strings'?
+                     ARRAY_SIZE(binder_return_strings));
+                                ^~~~~~~~~~~~~~~~~~~~~
+                                binder_command_strings
+../include/linux/kernel.h:44:48: note: expanded from macro 'ARRAY_SIZE'
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+                                               ^
+../include/linux/build_bug.h:69:19: note: expanded from macro 'BUILD_BUG_ON'
+        BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+                         ^
+../include/linux/build_bug.h:45:58: note: expanded from macro 'BUILD_BUG_ON_MSG'
+#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                                         ^
+../include/linux/compiler.h:348:22: note: expanded from macro 'compiletime_assert'
+        _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                            ^
+../include/linux/compiler.h:336:23: note: expanded from macro '_compiletime_assert'
+        __compiletime_assert(condition, msg, prefix, suffix)
+                             ^
+../include/linux/compiler.h:328:9: note: expanded from macro '__compiletime_assert'
+                if (!(condition))                                               \
+                      ^
+../drivers/android/binder.c:6245:27: note: 'binder_command_strings' declared here
+static const char * const binder_command_strings[] = {
+                          ^
+../drivers/android/binder.c:6293:19: error: use of undeclared identifier 'binder_return_strings'; did you mean 'binder_command_strings'?
+                     ARRAY_SIZE(binder_return_strings));
+                                ^~~~~~~~~~~~~~~~~~~~~
+                                binder_command_strings
+../include/linux/kernel.h:44:75: note: expanded from macro 'ARRAY_SIZE'
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+                                                                          ^
+../include/linux/compiler-clang.h:48:59: note: expanded from macro '__must_be_array'
+#define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+                                                          ^
+../include/linux/compiler_types.h:167:63: note: expanded from macro '__same_type'
+#define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+                                                              ^
+note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+../include/linux/compiler.h:348:22: note: expanded from macro 'compiletime_assert'
+        _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                            ^
+../include/linux/compiler.h:336:23: note: expanded from macro '_compiletime_assert'
+        __compiletime_assert(condition, msg, prefix, suffix)
+                             ^
+../include/linux/compiler.h:328:9: note: expanded from macro '__compiletime_assert'
+                if (!(condition))                                               \
+                      ^
+../drivers/android/binder.c:6245:27: note: 'binder_command_strings' declared here
+static const char * const binder_command_strings[] = {
+                          ^
+../drivers/android/binder.c:6293:19: error: use of undeclared identifier 'binder_return_strings'; did you mean 'binder_command_strings'?
+                     ARRAY_SIZE(binder_return_strings));
+                                ^~~~~~~~~~~~~~~~~~~~~
+                                binder_command_strings
+../include/linux/kernel.h:44:75: note: expanded from macro 'ARRAY_SIZE'
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+                                                                          ^
+../include/linux/compiler-clang.h:48:65: note: expanded from macro '__must_be_array'
+#define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+                                                                ^
+../include/linux/compiler_types.h:167:74: note: expanded from macro '__same_type'
+#define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+                                                                         ^
+note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+../include/linux/compiler.h:348:22: note: expanded from macro 'compiletime_assert'
+        _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                            ^
+../include/linux/compiler.h:336:23: note: expanded from macro '_compiletime_assert'
+        __compiletime_assert(condition, msg, prefix, suffix)
+                             ^
+../include/linux/compiler.h:328:9: note: expanded from macro '__compiletime_assert'
+                if (!(condition))                                               \
+                      ^
+../drivers/android/binder.c:6245:27: note: 'binder_command_strings' declared here
+static const char * const binder_command_strings[] = {
+                          ^
+../drivers/android/binder.c:6299:8: error: use of undeclared identifier 'binder_return_strings'; did you mean 'binder_command_strings'?
+                                   binder_return_strings[i], temp);
+                                   ^~~~~~~~~~~~~~~~~~~~~
+                                   binder_command_strings
+../drivers/android/binder.c:6245:27: note: 'binder_command_strings' declared here
+static const char * const binder_command_strings[] = {
+                          ^
+../drivers/android/binder.c:6446:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6452:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6469:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6494:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6526:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6555:1: error: function definition is not allowed here
+{
+^
+../drivers/android/binder.c:6653:17: error: use of undeclared identifier 'binder_init'
+device_initcall(binder_init);
+                ^
+In file included from ../drivers/android/binder.c:6656:
+In file included from ../drivers/android/./binder_trace.h:414:
+In file included from ../include/trace/define_trace.h:89:
+../drivers/android/./binder_trace.h:31:1: error: 'section' attribute only applies to functions, global variables, Objective-C methods, and Objective-C properties
+TRACE_EVENT(binder_ioctl,
+^
+../include/trace/define_trace.h:28:2: note: expanded from macro 'TRACE_EVENT'
+        DEFINE_TRACE(name)
+        ^
+../include/linux/tracepoint.h:293:2: note: expanded from macro 'DEFINE_TRACE'
+        DEFINE_TRACE_FN(name, NULL, NULL);
+        ^
+../include/linux/tracepoint.h:288:17: note: expanded from macro 'DEFINE_TRACE_FN'
+        __attribute__((section("__tracepoints"), used)) =                \
+                       ^
+In file included from ../drivers/android/binder.c:6656:
+In file included from ../drivers/android/./binder_trace.h:414:
+In file included from ../include/trace/define_trace.h:89:
+../drivers/android/./binder_trace.h:63:1: error: 'section' attribute only applies to functions, global variables, Objective-C methods, and Objective-C properties
+DEFINE_BINDER_LOCK_EVENT(binder_lock);
+^
+../drivers/android/./binder_trace.h:58:40: note: expanded from macro 'DEFINE_BINDER_LOCK_EVENT'
+#define DEFINE_BINDER_LOCK_EVENT(name)  \
+                                        ^
+../include/trace/define_trace.h:51:2: note: expanded from macro '\
+DEFINE_EVENT'
+        DEFINE_TRACE(name)
+        ^
+../include/linux/tracepoint.h:293:2: note: expanded from macro 'DEFINE_TRACE'
+        DEFINE_TRACE_FN(name, NULL, NULL);
+        ^
+../include/linux/tracepoint.h:288:17: note: expanded from macro 'DEFINE_TRACE_FN'
+        __attribute__((section("__tracepoints"), used)) =                \
+                       ^
+In file included from ../drivers/android/binder.c:6656:
+In file included from ../drivers/android/./binder_trace.h:414:
+In file included from ../include/trace/define_trace.h:89:
+../drivers/android/./binder_trace.h:64:1: error: 'section' attribute only applies to functions, global variables, Objective-C methods, and Objective-C properties
+DEFINE_BINDER_LOCK_EVENT(binder_locked);
+^
+../drivers/android/./binder_trace.h:58:40: note: expanded from macro 'DEFINE_BINDER_LOCK_EVENT'
+#define DEFINE_BINDER_LOCK_EVENT(name)  \
+                                        ^
+../include/trace/define_trace.h:51:2: note: expanded from macro '\
+DEFINE_EVENT'
+        DEFINE_TRACE(name)
+        ^
+../include/linux/tracepoint.h:293:2: note: expanded from macro 'DEFINE_TRACE'
+        DEFINE_TRACE_FN(name, NULL, NULL);
+        ^
+../include/linux/tracepoint.h:288:17: note: expanded from macro 'DEFINE_TRACE_FN'
+        __attribute__((section("__tracepoints"), used)) =                \
+                       ^
+In file included from ../drivers/android/binder.c:6656:
+In file included from ../drivers/android/./binder_trace.h:414:
+In file included from ../include/trace/define_trace.h:89:
+../drivers/android/./binder_trace.h:65:1: error: 'section' attribute only applies to functions, global variables, Objective-C methods, and Objective-C properties
+DEFINE_BINDER_LOCK_EVENT(binder_unlock);
+^
+../drivers/android/./binder_trace.h:58:40: note: expanded from macro 'DEFINE_BINDER_LOCK_EVENT'
+#define DEFINE_BINDER_LOCK_EVENT(name)  \
+                                        ^
+../include/trace/define_trace.h:51:2: note: expanded from macro '\
+DEFINE_EVENT'
+        DEFINE_TRACE(name)
+        ^
+../include/linux/tracepoint.h:293:2: note: expanded from macro 'DEFINE_TRACE'
+        DEFINE_TRACE_FN(name, NULL, NULL);
+        ^
+../include/linux/tracepoint.h:288:17: note: expanded from macro 'DEFINE_TRACE_FN'
+        __attribute__((section("__tracepoints"), used)) =                \
+                       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+  AR      drivers/clk/actions/built-in.a
+  AR      drivers/clk/bcm/built-in.a
+20 errors generated.
+  AR      drivers/clk/imgtec/built-in.a
+make[3]: *** [../scripts/Makefile.build:338: drivers/android/binder.o] Error 1
+make[2]: *** [../scripts/Makefile.build:642: drivers/android] Error 2
+make[2]: *** Waiting for unfinished jobs....
+  AR      drivers/clk/mediatek/built-in.a
+  AR      drivers/clk/mvebu/built-in.a
+  AR      drivers/clk/qcom/mdss/built-in.a
+  CC      drivers/clk/qcom/common.o
+  CC      drivers/clk/qcom/clk-regmap.o
+  DTC     arch/arm64/boot/dts/samsung/a52/a52xq/../../lagoon-sec-system-update-overlay.dtbo
+  DTC     arch/arm64/boot/dts/samsung/a52/a52xq/../../../vendor/qcom/lagoon.dtb
+  AR      kernel/locking/built-in.a
+  AR      drivers/clk/renesas/built-in.a
+  AR      drivers/clk/ti/built-in.a
+  CC      drivers/clk/qcom/clk-alpha-pll.o
+  CC      drivers/clk/qcom/clk-pll.o
+  CC      drivers/clk/qcom/clk-rcg.o
+  CC      drivers/clk/clk-devres.o
+  CC      kernel/sched/psi.o
+  CC      drivers/clk/clk-bulk.o
+  CC      drivers/clk/clkdev.o
+  CC      drivers/clk/clk.o
+  CC      drivers/clk/qcom/clk-rcg2.o
+  CC      drivers/clk/clk-divider.o
+  CC      drivers/clk/clk-fixed-factor.o
+  DTC     arch/arm64/boot/dts/samsung/a52/a52xq/a52xq_eur_open_w00_r00.dtbo
+  CC      drivers/clk/qcom/clk-branch.o
+  DTC     arch/arm64/boot/dts/samsung/a52/a52xq/a52xq_eur_open_w00_r01.dtbo
+  CC      drivers/clk/qcom/clk-regmap-divider.o
+  CC      drivers/clk/qcom/clk-regmap-mux.o
+  DTC     arch/arm64/boot/dts/samsung/a52/a52xq/a52xq_eur_open_w00_r02.dtbo
+  CC      drivers/clk/clk-fixed-rate.o
+  CC      drivers/clk/clk-gate.o
+  CC      drivers/clk/clk-multiplier.o
+  CC      drivers/clk/qcom/clk-regmap-mux-div.o
+  CC      drivers/clk/clk-mux.o
+  CC      drivers/clk/clk-composite.o
+  CC      drivers/clk/clk-fractional-divider.o
+  CC      drivers/clk/qcom/reset.o
+  AR      kernel/sched/built-in.a
+  CC      drivers/clk/qcom/clk-voter.o
+  GZIP    kernel/config_data.gz
+  CC      drivers/clk/qcom/clk-dummy.o
+  CC      drivers/clk/clk-gpio.o
+  CHK     kernel/kheaders_data.tar.xz
+  CC      drivers/clk/qcom/clk-debug.o
+  CC      drivers/clk/clk-conf.o
+  CC      drivers/clk/clk-xgene.o
+  CC      drivers/clk/qcom/gdsc-regulator.o
+  CC      drivers/clk/qcom/gdsc.o
+  CC      drivers/clk/qcom/clk-aop-qmp.o
+  CC      drivers/clk/qcom/clk-rpmh.o
+  CC      drivers/clk/qcom/camcc-lagoon.o
+  GEN     kernel/kheaders_data.tar.xz
+  CC      drivers/clk/qcom/debugcc-lagoon.o
+  CC      drivers/clk/qcom/dispcc-lagoon.o
+  CC      drivers/clk/qcom/gcc-lagoon.o
+  CC      drivers/clk/qcom/gpucc-lagoon.o
+  CC      drivers/clk/qcom/npucc-lagoon.o
+  CC      drivers/clk/qcom/videocc-lagoon.o
+  CC      drivers/clk/qcom/clk-spmi-pmic-div.o
+  AR      drivers/clk/qcom/built-in.a
+  AR      drivers/clk/built-in.a
+make[1]: *** [/home/stijn/samsung_android_kernel_a52xq/Makefile:1211: drivers] Error 2
+make[1]: *** Waiting for unfinished jobs....
+  CC      kernel/kheaders.o
+  AR      kernel/built-in.a
+  CC      techpack/audio/ipc/apr.o
+  CC      techpack/audio/ipc/apr_v2.o
+  CC      techpack/audio/ipc/apr_tal_rpmsg.o
+  AR      techpack/audio/ipc/built-in.a
+  AR      techpack/audio/built-in.a
+  AR      techpack/built-in.a
+make[1]: Leaving directory '/home/stijn/samsung_android_kernel_a52xq/out'
+make: *** [Makefile:146: sub-make] Error 2
+make: Leaving directory '/home/stijn/samsung_android_kernel_a52xq'
+cp: cannot stat 'out/arch/arm64/boot/Image': No such file or directory

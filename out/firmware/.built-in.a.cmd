@@ -1,0 +1,1 @@
+cmd_firmware/built-in.a :=  rm -f firmware/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD firmware/built-in.a firmware/tsp_zinitix/zt7650_a52xq.bin.gen.o firmware/tsp_stm/fts5cu56a_a52xq.bin.gen.o

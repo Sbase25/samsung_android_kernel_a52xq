@@ -1,0 +1,1 @@
+cmd_fs/verity/built-in.a :=  rm -f fs/verity/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD fs/verity/built-in.a fs/verity/enable.o fs/verity/hash_algs.o fs/verity/init.o fs/verity/measure.o fs/verity/open.o fs/verity/verify.o fs/verity/signature.o

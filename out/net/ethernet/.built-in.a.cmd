@@ -1,0 +1,1 @@
+cmd_net/ethernet/built-in.a :=  rm -f net/ethernet/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD net/ethernet/built-in.a net/ethernet/eth.o

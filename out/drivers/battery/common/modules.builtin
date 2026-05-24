@@ -1,0 +1,11 @@
+kernel/drivers/battery/common/sec_battery.ko
+kernel/drivers/battery/common/sec_battery_vote.ko
+kernel/drivers/battery/common/sec_battery_thermal.ko
+kernel/drivers/battery/common/sec_battery_dt.ko
+kernel/drivers/battery/common/sec_battery_ttf.ko
+kernel/drivers/battery/common/sb_full_soc.ko
+kernel/drivers/battery/common/sec_core_sysfs.ko
+kernel/drivers/battery/common/sec_battery_sysfs.ko
+kernel/drivers/battery/common/sec_device_sysfs.ko
+kernel/drivers/battery/common/sec_event_sysfs.ko
+kernel/drivers/battery/common/sec_pd.ko

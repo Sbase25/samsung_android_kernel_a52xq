@@ -1,0 +1,1 @@
+cmd_techpack/audio/ipc/built-in.a :=  rm -f techpack/audio/ipc/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD techpack/audio/ipc/built-in.a techpack/audio/ipc/apr.o techpack/audio/ipc/apr_v2.o techpack/audio/ipc/apr_tal_rpmsg.o

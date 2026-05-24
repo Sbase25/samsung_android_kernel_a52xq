@@ -1,0 +1,1 @@
+cmd_security/smack/built-in.a :=  rm -f security/smack/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD security/smack/built-in.a security/smack/smack_lsm.o security/smack/smack_access.o security/smack/smackfs.o

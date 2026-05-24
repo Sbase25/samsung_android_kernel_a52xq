@@ -1,0 +1,2 @@
+kernel/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_mcu_stm32g.ko
+kernel/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_thread.ko

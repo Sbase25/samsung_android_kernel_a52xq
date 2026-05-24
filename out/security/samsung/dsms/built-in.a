@@ -1,0 +1,16 @@
+!<thin>
+//                                              128       `
+dsms_access_control.o/
+dsms_init.o/
+dsms_kernel_api.o/
+dsms_policy.o/
+dsms_rate_limit.o/
+dsms_netlink.o/
+dsms_preboot_buffer.o/
+/0              0           0     0     644     7344      `
+/23             0           0     0     644     8136      `
+/36             0           0     0     644     6648      `
+/55             0           0     0     644     4088      `
+/70             0           0     0     644     8904      `
+/89             0           0     0     644     74928     `
+/105            0           0     0     644     56880     `

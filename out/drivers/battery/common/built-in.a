@@ -1,0 +1,32 @@
+!<thin>
+//                                              264       `
+sec_direct_charger.o/
+sec_battery.o/
+sec_battery_vote.o/
+sec_battery_thermal.o/
+sec_battery_dt.o/
+sec_battery_ttf.o/
+sb_full_soc.o/
+sec_core_sysfs.o/
+sec_battery_sysfs.o/
+sec_device_sysfs.o/
+sec_event_sysfs.o/
+sec_adc.o/
+sec_step_charging.o/
+sec_cisd.o/
+sec_pd.o/
+/0              0           0     0     644     381968    `
+/22             0           0     0     644     797904    `
+/37             0           0     0     644     131392    `
+/57             0           0     0     644     253768    `
+/80             0           0     0     644     444768    `
+/98             0           0     0     644     236792    `
+/117            0           0     0     644     246312    `
+/132            0           0     0     644     89472     `
+/150            0           0     0     644     299344    `
+/171            0           0     0     644     344752    `
+/191            0           0     0     644     230296    `
+/210            0           0     0     644     225904    `
+/221            0           0     0     644     271648    `
+/242            0           0     0     644     385888    `
+/254            0           0     0     644     11936     `

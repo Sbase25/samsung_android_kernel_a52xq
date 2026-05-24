@@ -1,0 +1,1 @@
+cmd_lib/reed_solomon/built-in.a :=  rm -f lib/reed_solomon/built-in.a; /home/stijn/samsung_android_kernel_a52xq/toolchain/toolchains-gcc-10.3.0/bin/aarch64-buildroot-linux-gnu-ar rcSTPD lib/reed_solomon/built-in.a lib/reed_solomon/reed_solomon.o
