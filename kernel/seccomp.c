@@ -669,6 +669,20 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
 	data = filter_ret & SECCOMP_RET_DATA;
 	action = filter_ret & SECCOMP_RET_ACTION_FULL;
 
+	/*
+	 * touchGrass: Samsung's Android 11 codec2 service ships a seccomp
+	 * policy that predates syscalls used by newer bionic (e.g. rseq),
+	 * so on Android 16 GSIs it is killed at startup.  Only for that
+	 * process, log the blocked syscall and allow it instead of killing.
+	 */
+	if ((action == SECCOMP_RET_TRAP || action == SECCOMP_RET_KILL_THREAD ||
+	     action == SECCOMP_RET_KILL_PROCESS) && current->group_leader &&
+	    !strncmp(current->group_leader->comm, "samsung.softwar", 15)) {
+		pr_info_ratelimited("touchGrass: seccomp allow syscall %d for %s\n",
+				    this_syscall, current->group_leader->comm);
+		action = SECCOMP_RET_ALLOW;
+	}
+
 	switch (action) {
 	case SECCOMP_RET_ERRNO:
 		/* Set low-order bits as an errno, capped at MAX_ERRNO. */
