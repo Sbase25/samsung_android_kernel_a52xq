@@ -1,0 +1,55 @@
+From 10ec90734ba4e30f892f254a4271b663cc5e2f54 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 2 Nov 2026 16:19:34 +0100
+Subject: [PATCH] msm: kgsl: pass the memdesc to kgsl_destroy_ion()
+
+kgsl_destroy_ion() was changed to take the memdesc (to skip freeing
+still-mapped memory), but its three callers still pass entry->priv_data,
+the dma-buf meta. As priv_data is void * this compiled silently; the
+function then did container_of() on the wrong object and never dropped
+the dma-buf reference/attachment of imported ION buffers.
+
+Every gralloc buffer the GPU imported was leaked when it was freed:
+~1 GB of ION after 20 minutes of use, 3.7 GB "lost RAM" after 5 hours,
+heavy swapping and lag.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ drivers/gpu/msm/kgsl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/msm/kgsl.c b/drivers/gpu/msm/kgsl.c
+index d079cbdde..c727d3337 100755
+--- a/drivers/gpu/msm/kgsl.c
++++ b/drivers/gpu/msm/kgsl.c
+@@ -386,7 +386,7 @@ static void mem_entry_destroy(struct kgsl_mem_entry *entry)
+ 
+ 	switch (memtype) {
+ 	case KGSL_MEM_ENTRY_ION:
+-		kgsl_destroy_ion(entry->priv_data);
++		kgsl_destroy_ion(&entry->memdesc);
+ 		break;
+ 	default:
+ 		break;
+@@ -3183,7 +3183,7 @@ long kgsl_ioctl_gpuobj_import(struct kgsl_device_private *dev_priv,
+ 
+ unmap:
+ 	if (kgsl_memdesc_usermem_type(&entry->memdesc) == KGSL_MEM_ENTRY_ION) {
+-		kgsl_destroy_ion(entry->priv_data);
++		kgsl_destroy_ion(&entry->memdesc);
+ 		entry->memdesc.sgt = NULL;
+ 	}
+ 
+@@ -3498,7 +3498,7 @@ long kgsl_ioctl_map_user_mem(struct kgsl_device_private *dev_priv,
+ error_attach:
+ 	switch (kgsl_memdesc_usermem_type(&entry->memdesc)) {
+ 	case KGSL_MEM_ENTRY_ION:
+-		kgsl_destroy_ion(entry->priv_data);
++		kgsl_destroy_ion(&entry->memdesc);
+ 		entry->memdesc.sgt = NULL;
+ 		break;
+ 	default:
+-- 
+2.43.0
+

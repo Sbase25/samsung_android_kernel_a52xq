@@ -48,7 +48,7 @@ If the tree was used for a GSI build before (TrebleDroid/MisterZtr patches), rem
 `.repo/local_manifests/treble*` and reset everything first:
 `repo sync -d --force-sync` (drops the GSI patches).
 
-## Kernel v1.1 (GSI zip)
+## Kernel v1.1 / v1.2 (GSI zip)
 
 - **USB fixed**: the LineageOS dwc3-msm never told Samsung's usb_notify layer that the
   controller had probed, so the boot-time VBUS event stayed reserved forever. Charging
@@ -56,6 +56,9 @@ If the tree was used for a GSI build before (TrebleDroid/MisterZtr patches), rem
 - **KernelSU-Next built in** (legacy branch, syscall-table hook; `0005`-`0008`). Works with
   the current release manager. To include it in a LineageOS build, append
   `vendor/samsung/overgrowth-ksu.config` to `TARGET_KERNEL_CONFIG`.
+- **GPU memory leak fixed (v1.2)**: `kgsl_destroy_ion()` got the dma-buf meta instead of the
+  memdesc, so every gralloc buffer the GPU imported was never released (~1 GB of ION after
+  20 minutes, 3.7 GB after 5 hours, heavy swapping and lag). Patch `0009`.
 - Magisk does not work on Android 17 GSIs with this 4.19 kernel (its SELinux patch is not
   applied); use KernelSU-Next instead.
 
