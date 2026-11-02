@@ -13,7 +13,7 @@ Firmware required on the phone: **A526BXXSCGYC1** (blobs are extracted from it).
 | Path | What |
 |---|---|
 | `local_manifests/a52xq.xml` | Adds device, common, vendor, kernel and hardware/samsung repos |
-| `patches/kernel/` | Overgrowth kernel commits (seccomp codec2 fix, A17 build fixes, USB role fix) |
+| `patches/kernel/` | Overgrowth kernel commits (seccomp codec2 fix, A17 build fixes, USB fixes, KernelSU-Next) |
 | `patches/device_a52xq/` | Device tree fix: rebase-kernel configs + `PROJECT_NAME=a52xq` (speaker amp) |
 | `apply-overgrowth.sh` | Applies the patches after `repo sync` (safe to run again) |
 | `extract-blobs.sh` | Pulls the a52xq Samsung blobs from the phone in TWRP |
@@ -47,6 +47,17 @@ The result is `out/target/product/a52xq/lineage-23.2-*-UNOFFICIAL-a52xq.zip`.
 If the tree was used for a GSI build before (TrebleDroid/MisterZtr patches), remove
 `.repo/local_manifests/treble*` and reset everything first:
 `repo sync -d --force-sync` (drops the GSI patches).
+
+## Kernel v1.1 (GSI zip)
+
+- **USB fixed**: the LineageOS dwc3-msm never told Samsung's usb_notify layer that the
+  controller had probed, so the boot-time VBUS event stayed reserved forever. Charging
+  worked, but adb/MTP never enumerated (`0004`).
+- **KernelSU-Next built in** (legacy branch, syscall-table hook; `0005`-`0008`). Works with
+  the current release manager. To include it in a LineageOS build, append
+  `vendor/samsung/overgrowth-ksu.config` to `TARGET_KERNEL_CONFIG`.
+- Magisk does not work on Android 17 GSIs with this 4.19 kernel (its SELinux patch is not
+  applied); use KernelSU-Next instead.
 
 ## Install
 

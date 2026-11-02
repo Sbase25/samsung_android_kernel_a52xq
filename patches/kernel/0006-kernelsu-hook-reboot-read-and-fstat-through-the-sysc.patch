@@ -1,0 +1,102 @@
+From 3f9be52d12ec7e43e46ffac2476d48c54718e1d6 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 2 Nov 2026 14:29:22 +0100
+Subject: [PATCH 6/8] kernelsu: hook reboot, read and fstat through the syscall
+ table
+
+The table hook only covered execve/faccessat/newfstatat. Without the
+reboot supercall the manager reports "Not integrated", and without
+read/fstat the init.rc injection that starts ksud never happens.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ drivers/kernelsu/hook/syscall_table_hook.c | 58 ++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+
+diff --git a/drivers/kernelsu/hook/syscall_table_hook.c b/drivers/kernelsu/hook/syscall_table_hook.c
+index 6aa55e711..999849fd9 100644
+--- a/drivers/kernelsu/hook/syscall_table_hook.c
++++ b/drivers/kernelsu/hook/syscall_table_hook.c
+@@ -9,6 +9,7 @@
+ #include <linux/version.h>
+ #include <linux/errno.h>
+ #include <linux/fcntl.h>
++#include <linux/stat.h>
+ #include <asm/ptrace.h>
+ #if defined(__aarch64__)
+ #include <asm/memory.h>
+@@ -213,6 +214,54 @@ static long ksu_sth_newfstatat(const struct pt_regs *regs)
+ }
+ #endif
+ 
++/*
++ * Overgrowth: the table scheme only covered execve/faccessat/stat. Without
++ * the reboot (supercall), read and fstat (init.rc injection for ksud) hooks
++ * the manager reports "Not integrated" and ksud never starts, so route those
++ * through the table too instead of patching kernel/reboot.c and fs/.
++ */
++extern int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd,
++				 void __user **arg);
++extern void ksu_handle_sys_read(unsigned int fd);
++extern void ksu_handle_newfstat_ret(unsigned int *fd,
++				    struct stat __user **statbuf_ptr);
++
++#ifdef __NR_reboot
++static long ksu_sth_reboot(const struct pt_regs *regs)
++{
++	int magic1 = (int)PT_REGS_PARM1(regs);
++	int magic2 = (int)PT_REGS_PARM2(regs);
++	unsigned int cmd = (unsigned int)PT_REGS_PARM3(regs);
++	void __user *arg = (void __user *)PT_REGS_SYSCALL_PARM4(regs);
++
++	ksu_handle_sys_reboot(magic1, magic2, cmd, &arg);
++
++	return ksu_sth_call_orig(__NR_reboot, regs);
++}
++#endif
++
++#ifdef __NR_read
++static long ksu_sth_read(const struct pt_regs *regs)
++{
++	ksu_handle_sys_read((unsigned int)PT_REGS_PARM1(regs));
++
++	return ksu_sth_call_orig(__NR_read, regs);
++}
++#endif
++
++#ifdef __NR_fstat
++static long ksu_sth_fstat(const struct pt_regs *regs)
++{
++	unsigned int fd = (unsigned int)PT_REGS_PARM1(regs);
++	struct stat __user *statbuf = (struct stat __user *)PT_REGS_PARM2(regs);
++	long ret = ksu_sth_call_orig(__NR_fstat, regs);
++
++	if (!ret)
++		ksu_handle_newfstat_ret(&fd, &statbuf);
++	return ret;
++}
++#endif
++
+ void __init ksu_syscall_table_hook_init(void)
+ {
+ 	struct {
+@@ -230,6 +279,15 @@ void __init ksu_syscall_table_hook_init(void)
+ #endif
+ #ifdef __NR_newfstatat
+ 		{ __NR_newfstatat, ksu_sth_newfstatat },
++#endif
++#ifdef __NR_reboot
++		{ __NR_reboot, ksu_sth_reboot },
++#endif
++#ifdef __NR_read
++		{ __NR_read, ksu_sth_read },
++#endif
++#ifdef __NR_fstat
++		{ __NR_fstat, ksu_sth_fstat },
+ #endif
+ 	};
+ 	int i, patched = 0;
+-- 
+2.43.0
+

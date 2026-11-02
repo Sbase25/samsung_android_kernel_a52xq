@@ -1,0 +1,42 @@
+From d18a230e542852232dd7561aa4718f3c6aef353e Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 2 Nov 2026 14:17:20 +0100
+Subject: [PATCH 4/8] usb: dwc3-msm: signal probe completion to Samsung
+ usb_notify
+
+The LineageOS dwc3-msm never sets dwc3_msm_probe_done or calls
+enable_usb_notify(), so usb_notify keeps the boot-time VBUS event
+reserved forever ("reserve_state_check wait dwc3 probe done").
+Charging works but the gadget never enumerates: no adb, no MTP.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ drivers/usb/dwc3/dwc3-msm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/usb/dwc3/dwc3-msm.c b/drivers/usb/dwc3/dwc3-msm.c
+index 6f135a74a..1f7e9058e 100755
+--- a/drivers/usb/dwc3/dwc3-msm.c
++++ b/drivers/usb/dwc3/dwc3-msm.c
+@@ -4390,6 +4390,17 @@ static int dwc3_msm_probe(struct platform_device *pdev)
+ 	device_create_file(&pdev->dev, &dev_attr_usb_compliance_mode);
+ 	device_create_file(&pdev->dev, &dev_attr_bus_vote);
+ 
++	/*
++	 * Overgrowth: tell Samsung's usb_notify layer that dwc3 is ready.
++	 * Without this, the VBUS event reserved during boot is never replayed
++	 * (reserve_state_check: "wait dwc3 probe done") and the gadget never
++	 * enumerates on the PC: USB charges, but no adb/MTP.
++	 */
++	mdwc->dwc3_msm_probe_done = 1;
++#if IS_ENABLED(CONFIG_USB_NOTIFY_LAYER)
++	enable_usb_notify();
++#endif
++
+ 	return 0;
+ 
+ put_dwc3:
+-- 
+2.43.0
+

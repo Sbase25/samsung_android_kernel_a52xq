@@ -1,0 +1,29 @@
+From 7165fc0434c6641ee66e152fc331d460e7a283ef Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 2 Nov 2026 14:45:28 +0100
+Subject: [PATCH 8/8] kernelsu: report uapi 5 for the current release manager
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ drivers/kernelsu/include/uapi/supercall.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/kernelsu/include/uapi/supercall.h b/drivers/kernelsu/include/uapi/supercall.h
+index b2064554c..f39b00253 100644
+--- a/drivers/kernelsu/include/uapi/supercall.h
++++ b/drivers/kernelsu/include/uapi/supercall.h
+@@ -11,7 +11,9 @@
+ // 4: add KSU_GET_INFO_FLAG_BUNDLED
+ // 5: add EVENT_SERVICES with a start/skip result
+ // 6: add KSU_IOCTL_LOOKUP_SYMBOLS and KSU_GET_INFO_FLAG_PREINIT; modules.rc and preinit may live under /metadata/vold/ksu
+-#define KERNEL_SU_UAPI_VERSION 6
++/* Overgrowth: report 5 so the current release manager (uapi 5) is accepted;
++ * v6 only adds LOOKUP_SYMBOLS and the PREINIT info flag. */
++#define KERNEL_SU_UAPI_VERSION 5
+ 
+ /* Magic numbers for reboot hook to install fd */
+ #define KSU_INSTALL_MAGIC1 0xDEADBEEF
+-- 
+2.43.0
+
