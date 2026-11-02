@@ -1,0 +1,51 @@
+From 1ad64a5d2b964ebdb27c0832da498682f91e9fc4 Mon Sep 17 00:00:00 2001
+From: Sbase25 <sbaselmans1@gmail.com>
+Date: Fri, 30 Oct 2026 16:52:08 +0100
+Subject: [PATCH 1/4] seccomp: allow legacy syscalls for Samsung codec2 service
+ on GSIs
+
+Samsung's Android 11 samsung.software.media.c2 HAL ships a seccomp
+policy that predates syscalls used by newer bionic (e.g. rseq). On an
+Android 16 GSI the service is SIGSYS-killed at startup, which makes
+mediaserver hang waiting for IComponentStore; StorageManagerService then
+blocks on codec enumeration and /sdcard never mounts (camera, ringtones
+and Settings->Storage all break).
+
+Narrowly scope a workaround to that one process (comm starts with
+"samsung.softwar"): log the otherwise-fatal syscall and allow it
+instead of killing. All other processes keep full seccomp enforcement.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ kernel/seccomp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index b56f574e6..63128e822 100755
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -674,6 +674,20 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 	data = filter_ret & SECCOMP_RET_DATA;
+ 	action = filter_ret & SECCOMP_RET_ACTION_FULL;
+ 
++	/*
++	 * touchGrass: Samsung's Android 11 codec2 service ships a seccomp
++	 * policy that predates syscalls used by newer bionic (e.g. rseq),
++	 * so on Android 16 GSIs it is killed at startup.  Only for that
++	 * process, log the blocked syscall and allow it instead of killing.
++	 */
++	if ((action == SECCOMP_RET_TRAP || action == SECCOMP_RET_KILL_THREAD ||
++	     action == SECCOMP_RET_KILL_PROCESS) && current->group_leader &&
++	    !strncmp(current->group_leader->comm, "samsung.softwar", 15)) {
++		pr_info_ratelimited("touchGrass: seccomp allow syscall %d for %s\n",
++				    this_syscall, current->group_leader->comm);
++		action = SECCOMP_RET_ALLOW;
++	}
++
+ 	switch (action) {
+ 	case SECCOMP_RET_ERRNO:
+ 		/* Set low-order bits as an errno, capped at MAX_ERRNO. */
+-- 
+2.43.0
+

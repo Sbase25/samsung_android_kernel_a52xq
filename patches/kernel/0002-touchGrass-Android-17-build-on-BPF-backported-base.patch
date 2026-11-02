@@ -1,0 +1,579 @@
+From 833cfd67b8240bf869a0abe0cfdae5c03761cadf Mon Sep 17 00:00:00 2001
+From: Stijn <sbaselmans1@gmail.com>
+Date: Sun, 1 Nov 2026 20:52:15 +0100
+Subject: [PATCH 2/4] touchGrass: Android 17 build on BPF-backported base
+
+- mm: add missing MEMFD_ASHMEM_SHIM Kconfig entry (Makefile/shmem hooks
+  were merged but the option was never defined)
+- configs: add touchgrass gsi/ebpf/a17 fragments (sockmap off: does not
+  build on this tree and Android does not use it)
+- camera: pass force_low_priority=false at Samsung call sites of
+  camera_io_dev_write{,_continuous} after the qcom API change
+- tas256x: fix misleading indentation (no functional change)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ .../vendor/samsung/touchgrass-a17.config      | 11 +++
+ .../vendor/samsung/touchgrass-ebpf.config     | 23 ++++++
+ .../vendor/samsung/touchgrass-gsi.config      | 15 ++++
+ mm/Kconfig                                    | 12 ++++
+ .../tas256x/os_layer/src/tas256x-regmap.c     |  4 +-
+ .../cam_actuator/cam_actuator_core.c          |  2 +-
+ .../cam_eeprom/cam_eeprom_core.c              | 70 +++++++++----------
+ .../cam_ois/cam_ois_mcu_stm32g.c              |  4 +-
+ .../cam_sensor/cam_sensor_core.c              | 18 ++---
+ 9 files changed, 110 insertions(+), 49 deletions(-)
+ create mode 100644 arch/arm64/configs/vendor/samsung/touchgrass-a17.config
+ create mode 100644 arch/arm64/configs/vendor/samsung/touchgrass-ebpf.config
+ create mode 100644 arch/arm64/configs/vendor/samsung/touchgrass-gsi.config
+
+diff --git a/arch/arm64/configs/vendor/samsung/touchgrass-a17.config b/arch/arm64/configs/vendor/samsung/touchgrass-a17.config
+new file mode 100644
+index 000000000..222f38c81
+--- /dev/null
++++ b/arch/arm64/configs/vendor/samsung/touchgrass-a17.config
+@@ -0,0 +1,11 @@
++#
++# touchGrassKernel - Android 17 (LineageOS 24) compat fragment. Apply after touchgrass-ebpf.config.
++# Mirrors what official LineageOS 24.0 enables on the 4.19 S20 FE (r8q) kernel.
++#
++CONFIG_LOCALVERSION="-touchGrass-a17"
++# ashmem ioctls on memfd: Android 17 hands out memfds, old Samsung HALs still speak ashmem
++CONFIG_MEMFD_CREATE=y
++CONFIG_ASHMEM=y
++CONFIG_MEMFD_ASHMEM_SHIM=y
++# ART userfaultfd (CMC) garbage collector
++CONFIG_USERFAULTFD=y
+diff --git a/arch/arm64/configs/vendor/samsung/touchgrass-ebpf.config b/arch/arm64/configs/vendor/samsung/touchgrass-ebpf.config
+new file mode 100644
+index 000000000..0041bce49
+--- /dev/null
++++ b/arch/arm64/configs/vendor/samsung/touchgrass-ebpf.config
+@@ -0,0 +1,23 @@
++#
++# touchGrassKernel - eBPF fragment for newer AOSP/LineageOS GSIs (Android 16/17 netd, bpfloader, tethering offload)
++# Apply AFTER touchgrass-gsi.config.
++#
++CONFIG_LOCALVERSION="-touchGrass-ebpf"
++# core
++CONFIG_BPF=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_BPF_JIT=y
++CONFIG_BPF_JIT_ALWAYS_ON=y
++CONFIG_BPF_EVENTS=y
++CONFIG_CGROUP_BPF=y
++# tc / clsact (clatd + tethering offload attach BPF on ingress/egress)
++CONFIG_NET_SCH_INGRESS=y
++CONFIG_NET_CLS_ACT=y
++CONFIG_NET_CLS_BPF=y
++CONFIG_NET_ACT_BPF=y
++# netfilter bpf match (bandwidth/traffic control)
++CONFIG_NETFILTER_XT_MATCH_BPF=y
++CONFIG_NETFILTER_XT_MATCH_OWNER=y
++# sockmap / stream parser + AF_XDP
++# CONFIG_BPF_STREAM_PARSER is not set
++CONFIG_XDP_SOCKETS=y
+diff --git a/arch/arm64/configs/vendor/samsung/touchgrass-gsi.config b/arch/arm64/configs/vendor/samsung/touchgrass-gsi.config
+new file mode 100644
+index 000000000..77ea976f8
+--- /dev/null
++++ b/arch/arm64/configs/vendor/samsung/touchgrass-gsi.config
+@@ -0,0 +1,15 @@
++#
++# touchGrassKernel - AOSP/LineageOS 23.2 (Android 16 QPR2) GSI fragment for a52xq
++#
++CONFIG_LOCALVERSION="-touchGrass"
++# CONFIG_LOCALVERSION_AUTO is not set
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_OVERLAY_FS=y
++CONFIG_EROFS_FS=y
++CONFIG_ANDROID_BINDERFS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_BPF_JIT=y
++CONFIG_CGROUP_BPF=y
++CONFIG_PSI=y
++CONFIG_MEMCG=y
+diff --git a/mm/Kconfig b/mm/Kconfig
+index de3c052fc..5d0dc1617 100755
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -893,6 +893,18 @@ config MAX_DIRTY_THRESH_PAGES
+ 	  It is only effective when dirty_ratio is used.
+ 	  (Setting dirty_bytes disables this option.)
+ 
++
++config MEMFD_ASHMEM_SHIM
++	bool "Memfd ashmem ioctl compatibility support"
++	depends on MEMFD_CREATE
++	help
++	  This provides compatibility support for ashmem ioctl commands against
++	  memfd file descriptors. This is useful for compatibility on Android
++	  for older applications that may use ashmem's ioctl commands on the
++	  now memfds passed to them.
++
++	  Unless you are running Android, say N.
++
+ endmenu
+ 
+ config PROCESS_RECLAIM
+diff --git a/techpack/audio/asoc/codecs/tas256x/os_layer/src/tas256x-regmap.c b/techpack/audio/asoc/codecs/tas256x/os_layer/src/tas256x-regmap.c
+index 64fd62ae9..b9716b039 100644
+--- a/techpack/audio/asoc/codecs/tas256x/os_layer/src/tas256x-regmap.c
++++ b/techpack/audio/asoc/codecs/tas256x/os_layer/src/tas256x-regmap.c
+@@ -1515,10 +1515,10 @@ static int tas256x_i2c_remove(struct i2c_client *p_client)
+ 			gpio_free(p_tas256x->devs[i]->mn_reset_gpio);
+ 		if (gpio_is_valid(p_tas256x->devs[i]->mn_irq_gpio))
+ 			gpio_free(p_tas256x->devs[i]->mn_irq_gpio);
+-			kfree(p_tas256x->devs[i]);
++		kfree(p_tas256x->devs[i]);
+ 	}
+ 
+-		kfree(p_tas256x->devs);
++	kfree(p_tas256x->devs);
+ 
+ 	return 0;
+ }
+diff --git a/techpack/camera/drivers/cam_sensor_module/cam_actuator/cam_actuator_core.c b/techpack/camera/drivers/cam_sensor_module/cam_actuator/cam_actuator_core.c
+index 375910657..d352914f2 100644
+--- a/techpack/camera/drivers/cam_sensor_module/cam_actuator/cam_actuator_core.c
++++ b/techpack/camera/drivers/cam_sensor_module/cam_actuator/cam_actuator_core.c
+@@ -1556,7 +1556,7 @@ int16_t cam_actuator_move_for_ois_test(struct cam_actuator_ctrl_t *a_ctrl)
+ 	reg_setting.data_type = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 
+ 	rc = camera_io_dev_write(&a_ctrl->io_master_info,
+-		&reg_setting);
++		&reg_setting, false);
+ 	if (rc < 0)
+ 		CAM_ERR(CAM_ACTUATOR,
+ 			"Failed to random write I2C settings: %d",
+diff --git a/techpack/camera/drivers/cam_sensor_module/cam_eeprom/cam_eeprom_core.c b/techpack/camera/drivers/cam_sensor_module/cam_eeprom/cam_eeprom_core.c
+index f83fcabaa..8801a983e 100644
+--- a/techpack/camera/drivers/cam_sensor_module/cam_eeprom/cam_eeprom_core.c
++++ b/techpack/camera/drivers/cam_sensor_module/cam_eeprom/cam_eeprom_core.c
+@@ -2545,7 +2545,7 @@ static int cam_otp_gc5035_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = ((addr*8)&(0x1F00))>>8;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -2557,7 +2557,7 @@ static int cam_otp_gc5035_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = ((addr*8)&(0x00FF));
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -2569,7 +2569,7 @@ static int cam_otp_gc5035_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = 0x20;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write pluse failed\n", __func__, __LINE__);
+@@ -2640,7 +2640,7 @@ static int cam_otp_gc5035_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     eb_info = (struct cam_eeprom_soc_private *)e_ctrl->soc_info.soc_private;
+ 
+     //load otp global setfile
+-    rc = camera_io_dev_write(&e_ctrl->io_master_info, &load_otp_setfile);
++    rc = camera_io_dev_write(&e_ctrl->io_master_info, &load_otp_setfile, false);
+     if (rc < 0)
+     {
+         pr_err("%s:(%d) load otp globle setfile failed\n", __func__, __LINE__);
+@@ -2648,7 +2648,7 @@ static int cam_otp_gc5035_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     }
+ 
+     //load read init setfile
+-    rc = camera_io_dev_write(&e_ctrl->io_master_info, &init_read_otp);
++    rc = camera_io_dev_write(&e_ctrl->io_master_info, &init_read_otp, false);
+     if (rc < 0)
+     {
+         pr_err("%s:(%d) load read init setfile failed\n", __func__, __LINE__);
+@@ -2786,7 +2786,7 @@ static int cam_otp_gc02m1_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = 0x02;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM, "write addr failed");
+@@ -2798,7 +2798,7 @@ static int cam_otp_gc02m1_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = addr * 8;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"write addr failed");
+@@ -2810,7 +2810,7 @@ static int cam_otp_gc02m1_read(struct cam_eeprom_ctrl_t *e_ctrl, uint32_t addr,
+     i2c_reg_array.reg_data = 0x34;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"write pluse failed");
+@@ -2863,7 +2863,7 @@ static int cam_otp_gc02m1_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+ 		sizeof(load_sensor_otp_setfile_reg)/sizeof(struct cam_sensor_i2c_reg_array), e_ctrl->soc_info.index);
+ 
+     //load otp global setfile
+-    rc = camera_io_dev_write(&e_ctrl->io_master_info, &load_otp_setfile);
++    rc = camera_io_dev_write(&e_ctrl->io_master_info, &load_otp_setfile, false);
+     if (rc < 0)
+     {
+         pr_err("%s:(%d) load otp globle setfile failed\n", __func__, __LINE__);
+@@ -2871,7 +2871,7 @@ static int cam_otp_gc02m1_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     }
+ 
+     //load read init setfile
+-    rc = camera_io_dev_write(&e_ctrl->io_master_info, &init_read_otp);
++    rc = camera_io_dev_write(&e_ctrl->io_master_info, &init_read_otp, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"load read init setfile failed");
+@@ -2949,7 +2949,7 @@ static int cam_otp_hi1336_init( struct camera_io_master *io_master_info)
+     }
+ 
+     /* load otp global setfile */
+-    rc = camera_io_dev_write( io_master_info, &load_hi1336_otp_setfile );
++    rc = camera_io_dev_write( io_master_info, &load_hi1336_otp_setfile , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "load otp globle setfile failed" );
+@@ -2957,7 +2957,7 @@ static int cam_otp_hi1336_init( struct camera_io_master *io_master_info)
+     }
+ 
+     /* OTP initial setting1 write */
+-    rc = camera_io_dev_write( io_master_info, &hi1336_otp_init_setting1 );
++    rc = camera_io_dev_write( io_master_info, &hi1336_otp_init_setting1 , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "load otp initial setfile1 failed" );
+@@ -2967,7 +2967,7 @@ static int cam_otp_hi1336_init( struct camera_io_master *io_master_info)
+     msleep(10);
+ 
+     /* OTP initial setting2 write */
+-    rc = camera_io_dev_write( io_master_info, &hi1336_otp_init_setting2 );
++    rc = camera_io_dev_write( io_master_info, &hi1336_otp_init_setting2 , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "load otp initial setfile2 failed" );
+@@ -3015,7 +3015,7 @@ static int cam_otp_hi1336_read( struct camera_io_master *io_master_info, uint32_
+     i2c_reg_array.reg_data		= (addr >> 8) & 0xff;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "write high address failed" );
+@@ -3027,7 +3027,7 @@ static int cam_otp_hi1336_read( struct camera_io_master *io_master_info, uint32_
+     i2c_reg_array.reg_data		= addr & 0xff;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "write low address failed" );
+@@ -3039,7 +3039,7 @@ static int cam_otp_hi1336_read( struct camera_io_master *io_master_info, uint32_
+     i2c_reg_array.reg_data		= 0x01;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "continuous read failed" );
+@@ -3106,7 +3106,7 @@ static int cam_otp_hi1336_burst_read( struct camera_io_master *io_master_info, u
+     i2c_reg_array.reg_data		= (addr >> 8) & 0xff;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "write high address failed" );
+@@ -3118,7 +3118,7 @@ static int cam_otp_hi1336_burst_read( struct camera_io_master *io_master_info, u
+     i2c_reg_array.reg_data		= addr & 0xff;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "write low address failed" );
+@@ -3130,7 +3130,7 @@ static int cam_otp_hi1336_burst_read( struct camera_io_master *io_master_info, u
+     i2c_reg_array.reg_data		= 0x01;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "continuous read failed" );
+@@ -3152,7 +3152,7 @@ static int cam_otp_hi1336_burst_read( struct camera_io_master *io_master_info, u
+     i2c_reg_array.reg_data		= 0x01;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "continuous read failed" );
+@@ -3171,7 +3171,7 @@ static int cam_otp_hi1336_burst_read( struct camera_io_master *io_master_info, u
+     i2c_reg_array.reg_data		= 0x00;
+     i2c_reg_settings.reg_setting	= &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings );
++    rc = camera_io_dev_write( io_master_info, &i2c_reg_settings , false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "continuous read failed" );
+@@ -3272,7 +3272,7 @@ static int cam_otp_hi1336_read_memory( struct cam_eeprom_ctrl_t *e_ctrl,
+     CAM_INFO( CAM_EEPROM, "read data done memptr=%pK VR:: End read_bytes=0x%x\n", memptr, read_bytes );
+ 
+     /* OTP finish setting1 write */
+-    rc = camera_io_dev_write( &e_ctrl->io_master_info, &hi1336_otp_finish_setting1 );
++    rc = camera_io_dev_write( &e_ctrl->io_master_info, &hi1336_otp_finish_setting1, false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "load otp finish setfile1 failed" );
+@@ -3282,7 +3282,7 @@ static int cam_otp_hi1336_read_memory( struct cam_eeprom_ctrl_t *e_ctrl,
+     msleep(10);
+ 
+     /* OTP finish setting2 write */
+-    rc = camera_io_dev_write( &e_ctrl->io_master_info, &hi1336_otp_finish_setting2 );
++    rc = camera_io_dev_write( &e_ctrl->io_master_info, &hi1336_otp_finish_setting2, false);
+     if ( rc < 0 )
+     {
+         CAM_ERR( CAM_EEPROM, "load otp finish setfile2 failed" );
+@@ -3333,7 +3333,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_data = 4;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -3344,7 +3344,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_data = OTP_Page;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -3354,7 +3354,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_data = 1;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write pluse failed\n", __func__, __LINE__);
+@@ -3374,7 +3374,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_data = 4;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -3383,7 +3383,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_addr = 0x0A00;
+     i2c_reg_array.reg_data = 0;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"%s:(%d) write addr failed\n", __func__, __LINE__);
+@@ -3432,7 +3432,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+         i2c_reg_array.reg_data = 4;
+         i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+         if (rc < 0)
+         {
+             CAM_ERR(CAM_EEPROM,"make initial state failed");
+@@ -3444,7 +3444,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+         i2c_reg_array.reg_data = OTP_Page;
+         i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+         if (rc < 0)
+         {
+             CAM_ERR(CAM_EEPROM,"set the PAGE failed");
+@@ -3456,7 +3456,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+         i2c_reg_array.reg_data = 1;
+         i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++        rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+         if (rc < 0)
+         {
+             CAM_ERR(CAM_EEPROM,"enable read mode failed");
+@@ -3487,7 +3487,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+                 i2c_reg_array.reg_addr = 0x0A00;
+                 i2c_reg_array.reg_data = 0;
+                 i2c_reg_settings.reg_setting = &i2c_reg_array;
+-                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+                 if (rc < 0)
+                 {
+                     CAM_ERR(CAM_EEPROM,"disable read mode failed");
+@@ -3499,7 +3499,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+                 i2c_reg_array.reg_data = OTP_Page;
+                 i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+                 if (rc < 0)
+                 {
+                     CAM_ERR(CAM_EEPROM,"set the PAGE failed");
+@@ -3511,7 +3511,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+                 i2c_reg_array.reg_data = 1;
+                 i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++                rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+                 if (rc < 0)
+                 {
+                     CAM_ERR(CAM_EEPROM,"enable read mode failed");
+@@ -3528,7 +3528,7 @@ static int cam_otp_s5k3l6_read_memory(struct cam_eeprom_ctrl_t *e_ctrl,
+     i2c_reg_array.reg_data = 0;
+     i2c_reg_settings.reg_setting = &i2c_reg_array;
+ 
+-    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings);
++    rc = camera_io_dev_write(&(e_ctrl->io_master_info), &i2c_reg_settings, false);
+     if (rc < 0)
+     {
+         CAM_ERR(CAM_EEPROM,"disable read mode failed");
+diff --git a/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_mcu_stm32g.c b/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_mcu_stm32g.c
+index 6df8dd39b..9c506035b 100644
+--- a/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_mcu_stm32g.c
++++ b/techpack/camera/drivers/cam_sensor_module/cam_ois/cam_ois_mcu_stm32g.c
+@@ -1329,7 +1329,7 @@ int cam_ois_i2c_write(struct cam_ois_ctrl_t *o_ctrl,
+     write_setting.reg_setting[0].reg_data = data;
+     write_setting.reg_setting[0].delay = 0;
+ 
+-	rc = camera_io_dev_write(&o_ctrl->io_master_info, &write_setting);
++	rc = camera_io_dev_write(&o_ctrl->io_master_info, &write_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_OIS, "ois i2c byte write failed addr : 0x%x data : 0x%x", addr, data);
+@@ -1376,7 +1376,7 @@ int cam_ois_i2c_write_continous(struct cam_ois_ctrl_t *o_ctrl,
+ 	}
+ 
+ 	rc = camera_io_dev_write_continuous(&o_ctrl->io_master_info,
+-		&write_settings,	CAM_SENSOR_I2C_WRITE_SEQ);
++		&write_settings,	CAM_SENSOR_I2C_WRITE_SEQ, false);
+ 
+ 	if (write_settings.reg_setting)
+ 		kfree(write_settings.reg_setting);
+diff --git a/techpack/camera/drivers/cam_sensor_module/cam_sensor/cam_sensor_core.c b/techpack/camera/drivers/cam_sensor_module/cam_sensor/cam_sensor_core.c
+index 6eec2f206..5e3846228 100644
+--- a/techpack/camera/drivers/cam_sensor_module/cam_sensor/cam_sensor_core.c
++++ b/techpack/camera/drivers/cam_sensor_module/cam_sensor/cam_sensor_core.c
+@@ -878,7 +878,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_step1_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 1 failed");
+@@ -897,7 +897,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_step3_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 2 failed");
+@@ -916,7 +916,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_defect_qty1_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 3a failed");
+@@ -944,7 +944,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_defect_qty2_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 3b failed");
+@@ -977,7 +977,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.addr_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP MACRO DD Autoload Step 4a DD NUM failed");
+@@ -993,7 +993,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.addr_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 4b DD NUM failed");
+@@ -1008,7 +1008,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_step4_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 4 failed");
+@@ -1027,7 +1027,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_step5_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 5 failed");
+@@ -1052,7 +1052,7 @@ int32_t gc5035_otp_dd_autoload_process(struct cam_sensor_ctrl_t *s_ctrl)
+ 	reg_setting.data_type   = CAMERA_SENSOR_I2C_TYPE_BYTE;
+ 	reg_setting.reg_setting = dd_autoload_step7_reg_arr;
+ 
+-	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting);
++	rc = camera_io_dev_write(&s_ctrl->io_master_info, &reg_setting, false);
+ 
+ 	if (rc < 0) {
+ 		CAM_ERR(CAM_SENSOR, "DPC_DBG GC5035 Macro Sensor OTP DD Autoload Step 7 failed");
+-- 
+2.43.0
+

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Overgrowth unofficial LineageOS 23.2 for Galaxy A52 5G (a52xq) -->
+<manifest>
+  <remote name="sm7225" fetch="https://github.com/samsung-sm7225" />
+
+  <project name="android_device_samsung_a52xq" path="device/samsung/a52xq" remote="sm7225" revision="lineage-23.2" />
+  <project name="android_device_samsung_sm7225-common" path="device/samsung/sm7225-common" remote="sm7225" revision="lineage-23.2-sm8250-rebase" />
+  <project name="android_vendor_samsung_sm7225-common" path="vendor/samsung/sm7225-common" remote="sm7225" revision="lineage-23.2" />
+  <!-- kernel pinned to the commit the Overgrowth patches are based on -->
+  <project name="android_kernel_samsung_sm7225" path="kernel/samsung/sm7225" remote="sm7225" revision="4dbb83072fe6ead4e6ffce7f0ba2b690e92103a0" upstream="lineage-23.2-rebase" clone-depth="1" />
+  <project name="LineageOS/android_hardware_samsung" path="hardware/samsung" remote="github" revision="lineage-23.2" />
+</manifest>
