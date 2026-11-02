@@ -1,0 +1,35 @@
+From 07876d87c124a14b1922d3dc31291da26ce634ac Mon Sep 17 00:00:00 2001
+From: Stijn <sbaselmans1@gmail.com>
+Date: Mon, 2 Nov 2026 08:22:37 +0100
+Subject: [PATCH] a52xq: use rebase kernel configs and Overgrowth fragments
+
+The lineage-23.2-rebase kernel has no vendor/a52xq_defconfig; keep the
+common lito defconfig and append the a52xq + Overgrowth fragments.
+Pass PROJECT_NAME=a52xq so techpack/audio builds the TAS256x amp.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KfdEw7FqSm92uoQmEa9GaX
+---
+ BoardConfig.mk | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index cba7922..9128c4e 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -8,7 +8,11 @@ LOCAL_PATH := device/samsung/a52xq
+ include device/samsung/sm7225-common/BoardConfigCommon.mk
+ 
+ # Kernel
+-TARGET_KERNEL_CONFIG        := vendor/a52xq_defconfig
++TARGET_KERNEL_CONFIG        += \
++    vendor/samsung/a52xq.config \
++    vendor/samsung/overgrowth-ebpf.config \
++    vendor/samsung/overgrowth-a17.config
++TARGET_KERNEL_ADDITIONAL_FLAGS += PROJECT_NAME=a52xq KCFLAGS=-Wno-error
+ BOARD_NAME                  := lito
+ 
+ # Display
+-- 
+2.43.0
+
